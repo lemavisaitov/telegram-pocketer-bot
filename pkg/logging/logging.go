@@ -68,7 +68,7 @@ func init() {
 
 	l.SetOutput(io.Discard)
 	l.AddHook(&writerHook{
-		Writers:   []io.Writer{allFile},
+		Writers:   []io.Writer{allFile, os.Stdout},
 		LogLevels: logrus.AllLevels,
 	})
 
