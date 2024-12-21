@@ -9,6 +9,7 @@ import (
 type Config struct {
 	ConsumerKey string `env:"CONSUMER_KEY"`
 	Token       string `env:"TOKEN"`
+	DBPath      string `env:"DB_PATH"`
 }
 
 var instance *Config
@@ -19,7 +20,7 @@ func GetConfig() *Config {
 		logger := logging.GetLogger()
 		logger.Info("read application configuration")
 		instance = &Config{}
-		if err := cleanenv.ReadConfig(".env", instance); err != nil {
+		if err := cleanenv.ReadConfig("bot.env", instance); err != nil {
 			help, _ := cleanenv.GetDescription(instance, nil)
 			logger.Info(help)
 			logger.Fatal(err)
