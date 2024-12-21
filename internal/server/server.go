@@ -32,6 +32,7 @@ func (s *AuthorizationServer) Start() error {
 }
 
 func (s *AuthorizationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -56,12 +57,16 @@ func (s *AuthorizationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+	if authResp == nil {
+		logger.Error("authResp is nil")
+		return
+	}
+
 	err = s.tokenRepository.Save(chatID, authResp.AccessToken, repository.AccessTokens)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	logger := logging.GetLogger()
 	logger.Infof("chat_id: %d\nrequest_token: %s\naccess_token: %s ", chatID, requestToken, authResp.AccessToken)
 	w.Header().Add("Location", s.redirectURL)
 	w.WriteHeader(http.StatusMovedPermanently)

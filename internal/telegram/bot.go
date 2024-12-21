@@ -36,8 +36,9 @@ func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel, logger *logging.Log
 			continue
 		}
 		if update.Message.IsCommand() {
-			err := b.handleCommand(update.Message, logger)
-			logger.Error(err)
+			if err := b.handleCommand(update.Message, logger); err != nil {
+				logger.Error(err)
+			}
 			continue
 		}
 		err := b.handleMessage(update.Message, logger)

@@ -23,8 +23,8 @@ func (b *Bot) handleCommand(message *tgbotapi.Message, logger *logging.Logger) e
 	}
 }
 
-func (b *Bot) handleMessage(message *tgbotapi.Message, logger *logging.Logger) error {
-	logger.Infof("[%s] %s", message.From.UserName, message.Text)
+func (b *Bot) handleMessage(message *tgbotapi.Message) error {
+
 	msg := tgbotapi.NewMessage(message.Chat.ID, message.Text)
 	msg.ReplyToMessageID = message.MessageID
 
@@ -33,8 +33,10 @@ func (b *Bot) handleMessage(message *tgbotapi.Message, logger *logging.Logger) e
 }
 
 func (b *Bot) handleStartCommand(message *tgbotapi.Message, logger *logging.Logger) error {
-	_, err := b.getAccessToken(message.Chat.ID)
+	accessToken, err := b.getAccessToken(message.Chat.ID)
+	logger.Infof("chat id: %d, access_token: %s", message.Chat.ID, accessToken)
 	if err != nil {
+		logger.Infof("chat_id: %d - is not authorized", message.Chat.ID)
 		return b.initAuthorizationProcess(message, logger)
 	}
 
